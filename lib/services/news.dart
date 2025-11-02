@@ -19,6 +19,7 @@ class News {
             urlToImage: element["urlToImage"],
             desc: element["description"],
             title: element["title"],
+            url:element["url"],
           );
           news.add(articleModel);
         }

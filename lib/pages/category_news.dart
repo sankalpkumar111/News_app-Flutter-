@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/models/show_category_model.dart';
+import 'package:news_app/pages/article_view.dart';
 import 'package:news_app/services/show_category_news.dart';
 
 class CategoryNews extends StatefulWidget {
@@ -32,11 +33,9 @@ class _CategoryNewsState extends State<CategoryNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff3280ef),
+      backgroundColor: const Color(0xff3280ef),
       body: Container(
-        margin: EdgeInsets.only(top: 40.0),
-
-
+        margin: const EdgeInsets.only(top: 40.0),
         child: Column(
           children: [
             Padding(
@@ -44,39 +43,115 @@ class _CategoryNewsState extends State<CategoryNews> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.arrow_back_ios_new_rounded,color: Colors.white,),
-                  SizedBox(width: MediaQuery.of(context).size.width/3.6,),
-                  Text("Bussiness",style: TextStyle(color: Colors.white,fontSize: 30.0,fontWeight: FontWeight.bold),)
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width / 4.9),
+                  Text(
+                    widget.name,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
-  SizedBox(height: 20.0,),
-  Expanded(
-    child: Container(
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0),topRight: Radius.circular(30.0))),
-      child: Column(
-      children: [
-        Container(
-          margin: EdgeInsets.all(10.0),
+            const SizedBox(height: 20.0),
 
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset("images/news1.jpg"
-                  )
+            // 🔹 Horizontal List of Categories
+
+
+            // 🔹 Expanded Container
+            Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0),
+                  ),
+                ),
+                child:  ListView.builder(
+
+
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    return CategoryTile(
+                      title: categories[index].title,
+                      desc: categories[index].desc,
+                      image: categories[index].urlToImage,
+                      url: categories[index].url,
+                    );
+                  },
+                ),
               ),
-              
-            ],
-          ),
-        )
-      ],
-    ),
-    ),
-  ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-    ])
+// 🔹 Category Tile Widget
+class CategoryTile extends StatelessWidget {
+  final String? image, title, desc, url;
+
+  const CategoryTile({super.key, this.image, this.title, this.desc, this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ArticleView(blogUrl: url ?? ''),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 40.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(image ?? '', fit: BoxFit.cover),
+            ),
+            const SizedBox(height: 10.0),
+            Text(
+              title ?? '',
+              maxLines: 2,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 5.0),
+            Text(
+              desc ?? '',
+              maxLines: 3,
+              style: const TextStyle(
+                color: Color.fromARGB(151, 0, 0, 0),
+                fontSize: 18.0,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
